@@ -1,2 +1,2 @@
 # proyecto-moviles
-Proyecto de grupo Perplejo embrollo
+Proyecto de grupo Embrollo
