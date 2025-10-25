@@ -95,6 +95,12 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
                 Button(onClick = { viewModel.navigateTo(Screen.Settings) }) {
                     Text("Ir a configuración")
                 }
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = {
+                    navController.navigate("registro")
+                }) {
+                    Text("Ir a Registro")
+                }
             }
         }
     }
