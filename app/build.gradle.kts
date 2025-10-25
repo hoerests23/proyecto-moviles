@@ -71,6 +71,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.navigation:navigation-runtime-ktx:2.9.5")
     implementation("androidx.webkit:webkit:1.14.0")
+    implementation("androidx.compose.runtime:runtime:1.9.4")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
