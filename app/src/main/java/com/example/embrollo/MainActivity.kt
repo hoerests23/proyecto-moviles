@@ -20,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.embrollo.navigation.NavigationEvent
 import com.example.embrollo.navigation.Screen
 import com.example.embrollo.ui.screens.HomeScreen
+import com.example.embrollo.ui.screens.LoginScreen
 import com.example.embrollo.ui.screens.ModoEspecialScreen
 import com.example.embrollo.ui.screens.ProfileScreen
 import com.example.embrollo.ui.screens.RegistroScreen
@@ -110,6 +111,13 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route="modo_especial") {
                             ModoEspecialScreen()
+                        }
+                        composable(route = "login") {
+                            LoginScreen(
+                                navController,
+                                usuarioViewModel,
+                                windowSizeClass = windowSizeClass
+                            )
                         }
                     }
                 }

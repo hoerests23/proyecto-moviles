@@ -20,8 +20,17 @@ fun ResumenScreen(viewModel: UsuarioViewModel, windowSizeClass: WindowSizeClass)
         Text(text = "Resumen del Registro", style = MaterialTheme.typography.headlineMedium)
         Text(text = "Nombre: ${estado.nombre}")
         Text(text = "Correo: ${estado.correo}")
-        Text(text = "Dirección: ${estado.direccion}")
-        Text(text = "Contraseña: ${"*".repeat( n = estado.clave.length)}")
-        Text(text = "Términos: ${if (estado.aceptaTerminos) "Aceptados" else "No aceptados"}")
+        if (estado.telefono.isNotEmpty()){
+            Text(text = "Telefono: ${estado.telefono}")
+        }
+        //Text(text = "Dirección: ${estado.direccion}")
+        //Text(text = "Contraseña: ${"*".repeat( n = estado.clave.length)}")
+        //Text(text = "Términos: ${if (estado.aceptaTerminos) "Aceptados" else "No aceptados"}")
+
+        Text(
+            text = "Generos: ${estado.generosFavoritos.joinToString(", ") {it.displayName}}"
+        )
+
     }
+
 }
