@@ -56,7 +56,6 @@ fun HomeScreenCompact() {
                     .height(150.dp),
                 contentScale = ContentScale.Fit
             )
-            //Errores en rojo seguramente se arreglen con el codigo completo
         }
     }
 }

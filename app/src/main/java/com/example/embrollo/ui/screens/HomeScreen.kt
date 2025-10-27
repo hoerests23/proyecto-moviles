@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -37,7 +38,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
+fun HomeScreen(navController: NavController, viewModel: MainViewModel, windowSizeClass: WindowSizeClass) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -100,6 +101,12 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
                     navController.navigate("registro")
                 }) {
                     Text("Ir a Registro")
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = {navController.navigate("modo_especial")}
+                ) {
+                    Text("Ir a modo especial!")
                 }
             }
         }

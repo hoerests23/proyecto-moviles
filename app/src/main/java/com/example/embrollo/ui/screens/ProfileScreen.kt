@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +17,8 @@ import com.example.embrollo.viewmodels.MainViewModel
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
+    windowSizeClass: WindowSizeClass
 ) {
     val items = listOf(Screen.Home, Screen.Profile)
     var selectedItem by remember { mutableStateOf(1) }

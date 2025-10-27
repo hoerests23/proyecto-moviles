@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import com.example.embrollo.ui.theme.EmbrolloTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -18,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.embrollo.navigation.NavigationEvent
 import com.example.embrollo.navigation.Screen
 import com.example.embrollo.ui.screens.HomeScreen
+import com.example.embrollo.ui.screens.ModoEspecialScreen
 import com.example.embrollo.ui.screens.ProfileScreen
 import com.example.embrollo.ui.screens.RegistroScreen
 import com.example.embrollo.ui.screens.ResumenScreen
@@ -27,7 +30,7 @@ import com.example.embrollo.viewmodels.UsuarioViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3WindowSizeClassApi::class)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +40,7 @@ class MainActivity : ComponentActivity() {
                 val mainViewModel: MainViewModel = viewModel()
                 val usuarioViewModel: UsuarioViewModel = viewModel()
                 val navController = rememberNavController()
+                val windowSizeClass = calculateWindowSizeClass(this)
 
                 // escucha eventos emitidos por viewmodel
                 LaunchedEffect(key1 = Unit) {
@@ -64,26 +68,48 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.Home.route,  // O "registro" si quieres empezar ahí
+                        startDestination = Screen.Home.route,
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         // principal
                         composable(route = Screen.Home.route) {
-                            HomeScreen(navController = navController, viewModel = mainViewModel)
+                            HomeScreen(
+                                navController = navController,
+                                viewModel = mainViewModel,
+                                windowSizeClass = windowSizeClass
+                            )
                         }
                         composable(route = Screen.Profile.route) {
-                            ProfileScreen(navController = navController, viewModel = mainViewModel)
+                            ProfileScreen(
+                                navController = navController,
+                                viewModel = mainViewModel,
+                                windowSizeClass = windowSizeClass
+                            )
                         }
                         composable(route = Screen.Settings.route) {
-                            SettingsScreen(navController = navController, viewModel = mainViewModel)
+                            SettingsScreen(
+                                navController = navController,
+                                viewModel = mainViewModel,
+                                windowSizeClass = windowSizeClass
+                            )
                         }
 
                         // registro
                         composable(route = "registro") {
-                            RegistroScreen(navController, usuarioViewModel)
+                            RegistroScreen(
+                                navController,
+                                usuarioViewModel,
+                                windowSizeClass = windowSizeClass
+                            )
                         }
                         composable(route = "resumen") {
-                            ResumenScreen(usuarioViewModel)
+                            ResumenScreen(
+                                usuarioViewModel,
+                                windowSizeClass = windowSizeClass
+                            )
+                        }
+                        composable(route="modo_especial") {
+                            ModoEspecialScreen()
                         }
                     }
                 }

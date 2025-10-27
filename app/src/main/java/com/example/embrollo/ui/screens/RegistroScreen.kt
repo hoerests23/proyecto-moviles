@@ -13,6 +13,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,7 +27,8 @@ import com.example.embrollo.viewmodels.UsuarioViewModel
 @Composable
 fun RegistroScreen(
     navController: NavController,
-    viewModel: UsuarioViewModel
+    viewModel: UsuarioViewModel,
+    windowSizeClass: WindowSizeClass
 ) {
     val estado by viewModel.estado.collectAsState()
 

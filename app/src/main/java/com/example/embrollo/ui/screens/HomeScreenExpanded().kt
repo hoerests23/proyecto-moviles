@@ -66,7 +66,6 @@ fun HomeScreenExpanded() {
                 }
             }
 
-            // Sección derecha: imagen grande
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo App",
