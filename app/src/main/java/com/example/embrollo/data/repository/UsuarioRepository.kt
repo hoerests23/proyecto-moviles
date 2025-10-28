@@ -51,6 +51,11 @@ class UsuarioRepository(private val usuarioDao: UsuarioDao) {
         return generos.joinToString(",") { it.name }
     }
 
+
+    suspend fun obtenerUltimoUsuario(): UsuarioEntity? {
+        return usuarioDao.obtenerUltimoUsuario()
+    }
+
     //pasar los generos en string
     fun jsonToGeneros(json: String): Set<GeneroFavorito> {
         if (json.isBlank()) return emptySet()

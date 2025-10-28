@@ -130,9 +130,18 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    //a implementar
     fun cerrarSesion() {
         _usuarioAutenticado.value = null
         _estado.value = LoginUiState()
+    }
+
+    fun obtenerUsuarioActual(): UsuarioEntity? {
+        return _usuarioAutenticado.value
+    }
+
+    fun establecerUsuarioAutenticado(usuario: UsuarioEntity?) {
+        _usuarioAutenticado.value = usuario
     }
 
     fun limpiarError() {

@@ -22,6 +22,9 @@ interface UsuarioDao {
     @Query("SELECT * FROM usuarios ORDER BY fechaRegistro DESC")
     fun obtenerTodosLosUsuarios(): Flow<List<UsuarioEntity>>
 
+    @Query("SELECT * FROM usuarios ORDER BY fechaRegistro DESC LIMIT 1")
+    suspend fun obtenerUltimoUsuario(): UsuarioEntity?
+
     //verificar credenciales
     @Query("SELECT * FROM usuarios WHERE correo = :correo AND clave = :clave LIMIT 1")
     suspend fun verificarCredenciales(correo: String, clave: String): UsuarioEntity?

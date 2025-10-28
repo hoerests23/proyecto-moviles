@@ -36,12 +36,14 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import coil.compose.rememberAsyncImagePainter
+import com.example.embrollo.viewmodels.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistroScreen(
     navController: NavController,
     viewModel: UsuarioViewModel,
+    loginViewModel: LoginViewModel,
     windowSizeClass: WindowSizeClass
 ) {
     val estado by viewModel.estado.collectAsState()
@@ -132,8 +134,14 @@ fun RegistroScreen(
             TopAppBar(
                 title = { Text("Registro - GameZone") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
+                    IconButton(
+                        onClick = {
+                            navController.navigate("home_page") {
+                                popUpTo(navController.graph.startDestinationId) { inclusive = false }
+                            }
+                        }
+                    ) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Inicio")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -437,6 +445,9 @@ fun RegistroScreen(
                         viewModel.registrarUsuario(
                             onExito = {
                                 mostrarLoading = false
+
+                                val usuario = viewModel.obtenerUsuarioRegistrado()
+                                loginViewModel.establecerUsuarioAutenticado(usuario)
                                 navController.navigate("resumen") {
                                     popUpTo("registro") { inclusive = false }
                                 }

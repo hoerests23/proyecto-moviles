@@ -41,8 +41,14 @@ fun LoginScreen(
             TopAppBar(
                 title = { Text("Iniciar Sesión - GameZone") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
+                    IconButton(
+                        onClick = {
+                            navController.navigate("home_page") {
+                                popUpTo(navController.graph.startDestinationId) { inclusive = false }
+                            }
+                        }
+                    ) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Inicio")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -144,12 +150,11 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            //iniciar sesion
             Button(
                 onClick = {
                     viewModel.intentarLogin(
                         onExito = {
-                            navController.navigate("home_page") {
+                            navController.navigate("profile_page") {
                                 popUpTo("login") { inclusive = true }
                             }
                         },

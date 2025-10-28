@@ -270,10 +270,9 @@ fun ResumenScreen(
                             )
                         }
 
-                        // Botón secundario - Ver perfil
                         OutlinedButton(
                             onClick = {
-                                navController.navigate("profile") {
+                                navController.navigate("profile_page") {
                                     popUpTo("registro") { inclusive = true }
                                 }
                             },

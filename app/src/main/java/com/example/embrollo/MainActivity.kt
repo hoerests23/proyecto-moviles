@@ -26,6 +26,7 @@ import com.example.embrollo.ui.screens.ProfileScreen
 import com.example.embrollo.ui.screens.RegistroScreen
 import com.example.embrollo.ui.screens.ResumenScreen
 import com.example.embrollo.ui.screens.SettingsScreen
+import com.example.embrollo.viewmodels.LoginViewModel
 import com.example.embrollo.viewmodels.MainViewModel
 import com.example.embrollo.viewmodels.UsuarioViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -42,6 +43,12 @@ class MainActivity : ComponentActivity() {
                 val usuarioViewModel: UsuarioViewModel = viewModel()
                 val navController = rememberNavController()
                 val windowSizeClass = calculateWindowSizeClass(this)
+
+                val loginViewModel: LoginViewModel = viewModel(
+                    factory = androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.getInstance(
+                        application
+                    )
+                )
 
                 // escucha eventos emitidos por viewmodel
                 LaunchedEffect(key1 = Unit) {
@@ -75,15 +82,15 @@ class MainActivity : ComponentActivity() {
                         // principal
                         composable(route = Screen.Home.route) {
                             HomeScreen(
-                                navController = navController,
                                 viewModel = mainViewModel,
+                                navController = navController,
                                 windowSizeClass = windowSizeClass
                             )
                         }
                         composable(route = Screen.Profile.route) {
                             ProfileScreen(
                                 navController = navController,
-                                viewModel = mainViewModel,
+                                viewModel = loginViewModel,
                                 windowSizeClass = windowSizeClass
                             )
                         }
@@ -97,9 +104,11 @@ class MainActivity : ComponentActivity() {
 
                         // registro
                         composable(route = "registro") {
+                            // 🔥 USA LA INSTANCIA COMPARTIDA
                             RegistroScreen(
                                 navController,
                                 usuarioViewModel,
+                                loginViewModel,
                                 windowSizeClass = windowSizeClass
                             )
                         }

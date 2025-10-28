@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.embrollo.data.database.AppDatabase
+import com.example.embrollo.data.entities.UsuarioEntity
 import com.example.embrollo.data.repository.UsuarioRepository
 import com.example.embrollo.models.GeneroFavorito
 import com.example.embrollo.models.UsuarioErrores
@@ -221,6 +222,18 @@ class UsuarioViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun obtenerUsuarioRegistrado(): UsuarioEntity? {
+        val estadoActual = _estado.value
+        return UsuarioEntity(
+            correo = estadoActual.correo,
+            nombre = estadoActual.nombre,
+            clave = estadoActual.clave,
+            telefono = estadoActual.telefono,
+            generosFavoritos = estadoActual.generosFavoritos.joinToString(",") { it.name },
+            fotoPerfilUri = estadoActual.fotoPerfilUri,
+            fechaRegistro = System.currentTimeMillis()
+        )
+    }
     fun limpiarFormulario() {
         _estado.value = UsuarioUiState()
         _registroExitoso.value = false
