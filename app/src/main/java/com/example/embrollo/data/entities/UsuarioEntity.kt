@@ -12,6 +12,7 @@ data class UsuarioEntity(
     val correo: String,
     val clave: String,
     val telefono: String,
+    val fotoPerfilUri: String? = null,
     val generosFavoritos: String,
     val fechaRegistro: Long = System.currentTimeMillis()
 )

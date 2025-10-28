@@ -103,6 +103,11 @@ class UsuarioViewModel(application: Application) : AndroidViewModel(application)
         _estado.update { it.copy(mostrarConfirmarClave = !it.mostrarConfirmarClave) }
     }
 
+    fun onFotoPerfilChange(uri: String?) {
+        _estado.update {
+            it.copy(fotoPerfilUri = uri)
+        }
+    }
     //validaciones
     private fun validarNombreCompleto(nombre: String): String? {
         return when {

@@ -10,6 +10,7 @@ data class UsuarioUiState(
     val mostrarClave: Boolean = false,
     val mostrarConfirmarClave: Boolean = false,
 
+    val fotoPerfilUri: String? = null,
     val generosFavoritos: Set<GeneroFavorito> = emptySet(),
 
     val aceptaTerminos: Boolean = false,

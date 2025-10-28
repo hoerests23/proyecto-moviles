@@ -46,7 +46,7 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel, windowSiz
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                Text(
+                /*Text(
                     "Navegación",
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(16.dp)
@@ -59,6 +59,7 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel, windowSiz
                         scope.launch { drawerState.close() }
                     }
                 )
+
                 NavigationDrawerItem(
                     label = { Text("Configuración") },
                     selected = false,
@@ -66,7 +67,7 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel, windowSiz
                         viewModel.navigateTo(Screen.Settings)
                         scope.launch { drawerState.close() }
                     }
-                )
+                )*/
             }
         }
     ) {
@@ -91,23 +92,34 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel, windowSiz
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text("¡Bienvenido a la página de inicio (MVVM)!")
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = { viewModel.navigateTo(Screen.Settings) }) {
-                    Text("Ir a configuración")
-                }
+                Text("¡Bienvenido a GameZone!")
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = {
                     navController.navigate("registro")
                 }) {
-                    Text("Ir a Registro")
+                    Text("Registrate")
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(onClick = {
+                    navController.navigate("login")
+                }) {
+                    Text("Inicia sesión")
+                }
+                /*
+                Button(onClick = { viewModel.navigateTo(Screen.Settings) }) {
+                    Text("Ir a configuración")
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {navController.navigate("modo_especial")}
                 ) {
                     Text("Ir a modo especial!")
                 }
+
+                 */
             }
         }
     }

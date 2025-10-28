@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
@@ -18,6 +19,23 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.embrollo.models.GeneroFavorito
 import com.example.embrollo.viewmodels.UsuarioViewModel
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.FileProvider
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
+import coil.compose.rememberAsyncImagePainter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,10 +52,90 @@ fun RegistroScreen(
     var mensajeError by remember { mutableStateOf("") }
     var mostrarLoading by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+
+    // URI temporal para la foto de la cámara
+    var tempPhotoUri by remember { mutableStateOf<Uri?>(null) }
+
+    // Crear archivo temporal para la foto
+    fun createImageFile(): File {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir = context.cacheDir
+        return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir)
+    }
+
+    // Launcher para la cámara
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success && tempPhotoUri != null) {
+            viewModel.onFotoPerfilChange(tempPhotoUri.toString())
+        }
+    }
+
+    // Launcher para la galería
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let {
+            viewModel.onFotoPerfilChange(it.toString())
+        }
+    }
+
+    // Launcher para permisos
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            val file = createImageFile()
+            tempPhotoUri = FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider",
+                file
+            )
+            tempPhotoUri?.let { cameraLauncher.launch(it) }
+        } else {
+            mostrarError = true
+            mensajeError = "Permiso de cámara denegado"
+        }
+    }
+
+    // Diálogo de selección
+    var mostrarDialogoFoto by remember { mutableStateOf(false) }
+
+    if (mostrarDialogoFoto) {
+        AlertDialog(
+            onDismissRequest = { mostrarDialogoFoto = false },
+            title = { Text("Seleccionar foto") },
+            text = { Text("¿Cómo quieres agregar tu foto de perfil?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    mostrarDialogoFoto = false
+                    permissionLauncher.launch(android.Manifest.permission.CAMERA)
+                }) {
+                    Text("Tomar foto")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    mostrarDialogoFoto = false
+                    galleryLauncher.launch("image/*")
+                }) {
+                    Text("Desde galería")
+                }
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Registro - GameZone") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -54,6 +152,71 @@ fun RegistroScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Spacer(modifier = Modifier.height(8.dp))
+
+            // 📷 FOTO DE PERFIL
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                )
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "Foto de Perfil",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    // Mostrar foto o placeholder
+                    Box(
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surface)
+                            .clickable(enabled = !mostrarLoading) {
+                                mostrarDialogoFoto = true
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (estado.fotoPerfilUri != null) {
+                            Image(
+                                painter = rememberAsyncImagePainter(
+                                    model = Uri.parse(estado.fotoPerfilUri)
+                                ),
+                                contentDescription = "Foto de perfil",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Sin foto",
+                                modifier = Modifier.size(64.dp),
+                                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                            )
+                        }
+                    }
+
+                    OutlinedButton(
+                        onClick = { mostrarDialogoFoto = true },
+                        enabled = !mostrarLoading
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.AddAPhoto,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(if (estado.fotoPerfilUri != null) "Cambiar foto" else "Agregar foto")
+                    }
+                }
+            }
 
             //error
             if (mostrarError) {

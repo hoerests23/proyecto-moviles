@@ -20,7 +20,8 @@ class UsuarioRepository(private val usuarioDao: UsuarioDao) {
                 correo = estado.correo,
                 clave = estado.clave,
                 telefono = estado.telefono,
-                generosFavoritos = generosToJson(estado.generosFavoritos)
+                generosFavoritos = generosToJson(estado.generosFavoritos),
+                fotoPerfilUri = estado.fotoPerfilUri
             )
 
             usuarioDao.insertarUsuario(entity)

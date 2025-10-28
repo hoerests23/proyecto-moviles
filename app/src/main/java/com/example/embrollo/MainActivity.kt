@@ -106,6 +106,7 @@ class MainActivity : ComponentActivity() {
                         composable(route = "resumen") {
                             ResumenScreen(
                                 usuarioViewModel,
+                                navController,
                                 windowSizeClass = windowSizeClass
                             )
                         }
