@@ -2,7 +2,7 @@
 Proyecto de grupo Embrollo
 
 Integrantes:
-Bastián Moya
+Bastián Moya,
 Mathias Cortés
 
 Aplicación movil para GameZone, con el objetivo de permitir el registro y logeo de usuarios en la aplicación.
