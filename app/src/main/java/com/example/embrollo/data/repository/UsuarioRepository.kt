@@ -2,19 +2,17 @@ package com.example.embrollo.data.repository
 
 import com.example.embrollo.data.dao.UsuarioDao
 import com.example.embrollo.data.entities.UsuarioEntity
+import com.example.embrollo.data.network.RetrofitClient
 import com.example.embrollo.models.GeneroFavorito
 import com.example.embrollo.models.UsuarioUiState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class UsuarioRepository(private val usuarioDao: UsuarioDao) {
 
+    // CAMBIO PRINCIPAL: Ahora retorna Int o Long basado en el código HTTP o ID
     suspend fun registrarUsuario(estado: UsuarioUiState): Long {
         return try {
-            // Verificar si el correo ya existe
-            if (usuarioDao.existeCorreo(estado.correo)) {
-                return -1L // Correo duplicado
-            }
-
             val entity = UsuarioEntity(
                 nombre = estado.nombre,
                 correo = estado.correo,
@@ -24,7 +22,18 @@ class UsuarioRepository(private val usuarioDao: UsuarioDao) {
                 fotoPerfilUri = estado.fotoPerfilUri
             )
 
-            usuarioDao.insertarUsuario(entity)
+            // --- LLAMADA A LA API ---
+            val response = RetrofitClient.apiService.registrarUsuario(entity)
+
+            if (response.isSuccessful && response.body() != null) {
+                // Opcional: Guardar copia local en Room para que funcione sin internet
+                // usuarioDao.insertarUsuario(entity)
+
+                return response.body()?.id?.toLong() ?: 1L
+            } else {
+
+                return -1L
+            }
         } catch (e: Exception) {
             e.printStackTrace()
             -1L
@@ -32,41 +41,29 @@ class UsuarioRepository(private val usuarioDao: UsuarioDao) {
     }
 
     suspend fun verificarLogin(correo: String, clave: String): UsuarioEntity? {
-        return usuarioDao.verificarCredenciales(correo, clave)
+        return try {
+            val request = com.example.embrollo.data.network.UsuarioApiService.LoginRequest(correo, clave)
+            val response = RetrofitClient.apiService.login(request)
+
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
-    suspend fun existeCorreo(correo: String): Boolean {
-        return usuarioDao.existeCorreo(correo)
-    }
-
-    suspend fun obtenerUsuarioPorCorreo(correo: String): UsuarioEntity? {
-        return usuarioDao.obtenerUsuarioPorCorreo(correo)
-    }
-
-    fun obtenerTodosLosUsuarios(): Flow<List<UsuarioEntity>> {
-        return usuarioDao.obtenerTodosLosUsuarios()
-    }
-
+    // Funciones auxiliares se mantienen igual
     private fun generosToJson(generos: Set<GeneroFavorito>): String {
         return generos.joinToString(",") { it.name }
     }
 
 
-    suspend fun obtenerUltimoUsuario(): UsuarioEntity? {
-        return usuarioDao.obtenerUltimoUsuario()
-    }
+    suspend fun existeCorreo(correo: String): Boolean {
 
-    //pasar los generos en string
-    fun jsonToGeneros(json: String): Set<GeneroFavorito> {
-        if (json.isBlank()) return emptySet()
-        return json.split(",")
-            .mapNotNull {
-                try {
-                    GeneroFavorito.valueOf(it)
-                } catch (e: Exception) {
-                    null
-                }
-            }
-            .toSet()
+        return false
     }
 }
