@@ -79,6 +79,9 @@ class MainActivity : ComponentActivity() {
                         startDestination = Screen.Home.route,
                         modifier = Modifier.padding(innerPadding)
                     ) {
+                        composable(route = "pokemon_list") {
+                            com.example.embrollo.ui.screens.PokemonScreen(navController = navController)
+                        }
                         // principal
                         composable(route = Screen.Home.route) {
                             HomeScreen(
